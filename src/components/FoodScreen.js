@@ -1,10 +1,12 @@
-import React, { useEffect, useReducer } from 'react';
+import React, { useState, useEffect, useReducer } from 'react';
 
 import { NavBar } from './NavBar';
 import { ListItem } from './ListItem';
 import { FoodAside } from './FoodAside';
 import { foodReducer } from '../reducers/foodReducer';
 
+import { getOrders } from '../helpers/getOrders';
+import { postOrder } from '../helpers/postOrder';
 
 const init = () => {
     return JSON.parse( localStorage.getItem('list') ) || [];
@@ -13,12 +15,11 @@ const init = () => {
 export const FoodScreen = () => {
 
     const [list, dispatch ] = useReducer(foodReducer, [], init );
-    console.log("list", list);
+    const [order, setsOrder] = useState({ data: [] });
 
     const handleAddNew = (product) => {
 
         if( list.findIndex(elem => elem.id === product.id) !== -1) {
-            console.log("product", product);
             dispatch({
                 type: 'update',
                 payload: product
@@ -40,9 +41,36 @@ export const FoodScreen = () => {
         });
     }
 
+    const handleAddNewOrder = async (table) => {
+      await postOrder(list, table);
+      getOrders()
+        .then(orders => {
+
+          setsOrder({
+            data: orders,
+          });
+      });
+      dispatch({
+        type: 'deleteAll',
+      })
+    }
+
     useEffect( () => {
         localStorage.setItem('list', JSON.stringify( list ) )
     }, [list] )
+
+    useEffect(() => {
+
+      getOrders()
+        .then(orders => {
+
+          setsOrder({
+            data: orders,
+          });
+        });
+
+    }, [])
+
     
     return (
         <div className='screencontainer' >
@@ -50,10 +78,12 @@ export const FoodScreen = () => {
             <div className='maincontainer'>
                 <ListItem 
                     handleAddNew = {handleAddNew}
+                    order = {order}
                 />
                 <FoodAside
                     list = {list}
                     handleDelete = {handleDelete}
+                    handleAddNewOrder={handleAddNewOrder}
                 />
             </div>
         </div>

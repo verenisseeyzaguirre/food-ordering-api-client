@@ -1,24 +1,29 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-import { useState } from "react"
 import { ItemSelected } from './ItemSelected'
 import Select from 'react-select';
 
 import { tables } from '../data/tables';
 
 
-export const FoodAside = ( {list, handleDelete} ) => {
+export const FoodAside = ({ list, handleDelete, handleAddNewOrder } ) => {
 
   const total = list.reduce((acc, element) => (
-      acc + ( element.qty * element.price)), 0);
+      acc + ( element.quantity * element.price)), 0);
 
   const tableNumber = tables
+  
+  const [table, setTable] = useState('');
+
+  const submitOrder = (table) => {
+    handleAddNewOrder(table)
+    setTable({ label: "", value: 0 })
+  }
 
   const customStyles = {
     option: (provided, state) => ({
       ...provided,
       color: state.isSelected ? 'white' : 'blue',
-
     })
   }
 
@@ -34,6 +39,8 @@ export const FoodAside = ( {list, handleDelete} ) => {
               <Select
                 styles={customStyles}
                 options={tableNumber}
+                value={tableNumber.filter(({value}) => value === table)}
+                onChange={e => {setTable(e.value)}}
               />
             </div>
           </div>
@@ -65,7 +72,7 @@ export const FoodAside = ( {list, handleDelete} ) => {
             (total > 0) &&
             <button
               className='pointer btn_order'
-              //onClick={() => handleAddNew(product)}
+              onClick={() => submitOrder(table)}
             > Enviar pedido 
             </button>
           }

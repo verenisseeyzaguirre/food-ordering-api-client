@@ -4,7 +4,7 @@ export const ItemSelected = ( { product, handleDelete } ) => {
 
     const { name, price } = product;
 
-    const subTotal = product.qty*price
+    const subTotal = product.quantity*price
 
     return (
         <div className='selectedcard' >
@@ -18,7 +18,7 @@ export const ItemSelected = ( { product, handleDelete } ) => {
             <div className='flexrow' >
                 <div className='flexcolumn'>
                     <div className='flexrow'>
-                        <p className='selectedcard_text'>  { product.qty  } </p>
+                        <p className='selectedcard_text'>  { product.quantity  } </p>
                         <p className='selectedcard_text'> {name} </p>	 
                     </div>   
                     <p className='selectedcard_text'> Total : S/.{subTotal} </p>

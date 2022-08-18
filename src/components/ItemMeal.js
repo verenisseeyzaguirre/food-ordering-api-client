@@ -4,7 +4,7 @@ export const ItemMeal = ( { product, handleAddNew } ) => {
 
     const { name, price } = product;
 
-    product.qty = 1;
+    product.quantity = 1;
     
     return (  
         <div className='cardproduct' >
